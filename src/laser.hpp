@@ -8,12 +8,11 @@ class Laser
 public:
     PinName pin;
     AnalogIn analogin;
-    int tag;
 
     int readDenoise(); //割り込みで実行するな!
     int read(); //割り込みで実行するな!
     void calibrate(int distance); //割り込みで実行するな!
-    Laser(PinName pin, int tag=0); 
+    Laser(PinName pin); 
 
     void loadCalibrationFromFlash();
     void saveCalibrationToFlash();

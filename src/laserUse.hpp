@@ -29,7 +29,7 @@ class LaserUse: public _LaserUse
         LaserPos laser;
         LaserUse(float minX, float maxX, float minY, float maxY, float errorD, int wallDirection, int wallR, LaserPos laser);
 
-        void scan(float* X, float* Y, float* D, bool denoise=false);
+        void scan(float* X, float* Y, float* D, bool denoise=false, bool always=false);
 };
 
 
@@ -42,6 +42,6 @@ class LaserPairUse: public _LaserUse
 
         LaserPairUse(float minX, float maxX, float minY, float maxY, float errorD, int wallDirection, int wallR, LaserPos laser1, LaserPos laser2);
 
-        void scan(float* X, float* Y, float* D, bool denoise=false);
+        void scan(float* X, float* Y, float* D, bool denoise=false, bool always=false);
 };
 

@@ -5,10 +5,10 @@
 using namespace std;
 
 #define CALIBRATION_N (101) //calibrateで何回計測するか
-#define READ_DENOISE_N (9) //readDenoiseで何回計測するか
+#define READ_DENOISE_N (15) //readDenoiseで何回計測するか
 
-#define DEFAULT_A (1433.40f)
-#define DEFAULT_B (-260.58f)
+#define DEFAULT_A (14334.0f)
+#define DEFAULT_B (-2605.8f)
 
 //ふつうに読む(8usほどかかる)
 int Laser::read()
@@ -99,7 +99,7 @@ void Laser::saveCalibrationToFlash() {
 }
 
 //初期化
-Laser::Laser(PinName pin, int tag) : pin(pin), analogin(pin), tag(tag)
+Laser::Laser(PinName pin) : pin(pin), analogin(pin)
 {
     calibrationNum = 0;
 

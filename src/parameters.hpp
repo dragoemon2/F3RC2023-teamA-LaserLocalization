@@ -18,7 +18,7 @@
 #define TRED_RADIUS (150.0f) //中心からオムニホイールの距離[mm]
 #define WHEEL_DIAMETER (88.0f)	//オムニホイールの直径	[mm]
 #define WHEEL_RADIUS	(WHEEL_DIAMETER/2.0f) //オムニホイールの半径	[mm]
-#define MMPP 		(WHEEL_DIAMETER*PI)/(ENC_RES_MAX)	//エンコーダ1パルスあたりに進む距離[mm]
+#define MMPP 		((WHEEL_DIAMETER*PI)/(ENC_RES_MAX))	//エンコーダ1パルスあたりに進む距離[mm]
 #define RADPP 	(MMPP/TRED_RADIUS)	//エンコーダ1パルスあたりの回転角[rad]
 
 //モーターのPIDゲイン

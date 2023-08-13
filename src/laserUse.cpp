@@ -6,7 +6,7 @@
 float radiansMod(float x, float y=2*PI){
     //x (mod y) を -y/2 ~ y/2の範囲で出力
     //主に2つの方角のなす角度を計算するのに使用
-    return fmod((fmod(x,y) + y/2),y) + y/2;
+    return fmod((fmod(x,y) + y/2),y) - y/2;
 }
 
 _LaserUse::_LaserUse(float minX, float maxX, float minY, float maxY, float errorD, int wallDirection, int wallR, int laserDirection): minX(minX), maxX(maxX), minY(minY), maxY(maxY), errorD(errorD), wallDirection(wallDirection), wallR(wallR), laserDirection(laserDirection) {
@@ -38,19 +38,19 @@ bool _LaserUse::check(float X, float Y, float D){
     return (minX <= X && X < maxX && minY <= Y && Y < maxY && -errorD < diffD && diffD < errorD);
 }
 
-void LaserUse::scan(float* X, float* Y, float* D, bool denoise){
-    if(!check(*X, *Y, *D)){
+void LaserUse::scan(float* X, float* Y, float* D, bool denoise, bool always){
+    if(!always && !check(*X, *Y, *D)){
         return;
     }
 
     float theta1 = *D - wallDirection*PI/2;
     float theta2 = theta1 + laserDirection*PI/2;
 
-    int length;
+    float length;
     if(denoise){
-        length = laser.readDenoise();
+        length = float(laser.readDenoise());
     }else{
-        length = laser.read();
+        length = float(laser.read());
     }
 
     //ロボットの位置ベクトルと壁の単位法線ベクトルの内積
@@ -76,18 +76,19 @@ void LaserUse::scan(float* X, float* Y, float* D, bool denoise){
 }
 
 
-void LaserPairUse::scan(float* X, float* Y, float* D, bool denoise){
-    if(!check(*X, *Y, *D)){
+void LaserPairUse::scan(float* X, float* Y, float* D, bool denoise, bool always){
+    if(!always && !check(*X, *Y, *D)){
+        printf("hoge");
         return;
     }
 
-    int length1, length2;
+    float length1, length2;
     if(denoise){
-        length1 = laser1.readDenoise();
-        length2 = laser2.readDenoise();
+        length1 = float(laser1.readDenoise());
+        length2 = float(laser2.readDenoise());
     }else{
-        length1 = laser1.read();
-        length2 = laser2.readDenoise();
+        length1 = float(laser1.read());
+        length2 = float(laser2.read());
     }
 
     //まず角度を調べる．
