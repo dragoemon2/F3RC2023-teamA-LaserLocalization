@@ -7,26 +7,32 @@ using namespace std;
 #define CALIBRATION_N (101) //calibrateで何回計測するか
 #define READ_DENOISE_N (15) //readDenoiseで何回計測するか
 
-#define DEFAULT_A (14334.0f)
-#define DEFAULT_B (-2605.8f)
+#define TEIKOU 155
+
+#if TEIKOU == 150
+    #define DEFAULT_A (14334.0f)
+    #define DEFAULT_B (-2605.8f)
+#else
+    #define DEFAULT_A (13043.0f)
+    #define DEFAULT_B (-2374.0f)
 
 //ふつうに読む(8usほどかかる)
 int Laser::read()
 {
     float dis = analogin.read();
     int dismm = convert(dis);
-    return (dismm);
+    return dismm;
 }
 
 //ノイズを除去して読む(72usほどかかる)
 int Laser::readDenoise(){
     //READ_DENOISE_N=9回計測して中間値を出力
-    float values[READ_DENOISE_N];
+    int values[READ_DENOISE_N];
     for(int i=0;i<READ_DENOISE_N;i++){
-        values[i] = analogin.read();
+        values[i] = read();
     }
-    sort(values, values+READ_DENOISE_N, greater<int>()); //並べ替え
-    return convert(values[READ_DENOISE_N/2]);
+    sort(values, values+READ_DENOISE_N); //並べ替え
+    return values[READ_DENOISE_N/2];
 }
 
 //0~1の数値から距離[mm]に変換

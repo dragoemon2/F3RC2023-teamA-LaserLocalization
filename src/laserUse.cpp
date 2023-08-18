@@ -23,11 +23,11 @@ LaserPairUse::LaserPairUse(float minX, float maxX, float minY, float maxY, float
         printf("Exception: failed raisers");
     }
     if(laserDirection == NORTH || laserDirection == SOUTH){
-        if(laser1.posY != laser2.posY || laser1.posX == laser2.posY){
+        if(laser1.posY != laser2.posY || laser1.posX == laser2.posX){
             printf("Exception: failed raisers");
         }
     }else if(laserDirection == EAST || laserDirection == WEST){
-        if(laser1.posY == laser2.posY || laser1.posX != laser2.posY){
+        if(laser1.posY == laser2.posY || laser1.posX != laser2.posX){
             printf("Exception: failed raisers");
         }
     }
@@ -43,8 +43,8 @@ void LaserUse::scan(float* X, float* Y, float* D, bool denoise, bool always){
         return;
     }
 
-    float theta1 = *D - wallDirection*PI/2;
-    float theta2 = theta1 + laserDirection*PI/2;
+    float theta1 = wallDirection*PI/2 - *D;
+    float theta2 = theta1 - laserDirection*PI/2;
 
     float length;
     if(denoise){
@@ -54,7 +54,7 @@ void LaserUse::scan(float* X, float* Y, float* D, bool denoise, bool always){
     }
 
     //ロボットの位置ベクトルと壁の単位法線ベクトルの内積
-    float value = wallR + laser.posX*cos(theta1) + laser.posY*sin(theta1) - length*cos(theta2);
+    float value = wallR - (laser.posX*cos(theta1) + laser.posY*sin(theta1) + length*cos(theta2));
 
     switch (wallDirection)
     {
@@ -91,9 +91,23 @@ void LaserPairUse::scan(float* X, float* Y, float* D, bool denoise, bool always)
         length2 = float(laser2.read());
     }
 
+    if(length1 < 0 || length2 < 0){
+        return;
+    }
+
     //まず角度を調べる．
 
-    float gamma; //D - (wallDirection - laserDirection)*PI/2の値
+    float beta = laser1.direction*PI/4 + laser2.direction*PI/4; //レーザー向き
+    float beta_err = laser1.direction*PI/4 - laser2.direction*PI/4; //いまは0
+
+    float diffX = laser1.posX - laser2.posX;
+    float diffY = laser1.posY - laser2.posY;
+
+    float tangent = -(cos(beta)*diffX+sin(beta)*diffY+(length1-length2)*cos(beta_err))/(-sin(beta)*diffX+cos(beta)*diffY+(length1+length2)*sin(beta_err));
+
+    float gamma = atan(tangent); //D - (wallDirection - laserDirection)*PI/2の値
+
+    /*
     switch (wallDirection) {
     case EAST:
         gamma = atan((length1-length2)/(laser1.posY - laser2.posY));
@@ -115,16 +129,16 @@ void LaserPairUse::scan(float* X, float* Y, float* D, bool denoise, bool always)
         gamma = *D - (wallDirection - laserDirection)*PI/2;
         break;
     }
+    */
 
-    *D = gamma + (wallDirection - laserDirection)*PI/2;
+    *D = wallDirection*PI/2 - beta - gamma;
 
-    //次に距離を調べる．
+    //次に距離を調べる
 
-    float theta1 = *D - wallDirection*PI/2;
-    float theta2 = theta1 + laserDirection*PI/2;
+    float theta1 = wallDirection*PI/2 - *D;
 
     //ロボットの位置ベクトルと壁の単位法線ベクトルの内積
-    float value = wallR - (laser1.posX*cos(theta1) + laser1.posY*sin(theta1) + length1*cos(theta2));
+    float value = wallR - (laser1.posX*cos(theta1) + laser1.posY*sin(theta1) + length1*cos(gamma));
 
     switch (wallDirection)
     {

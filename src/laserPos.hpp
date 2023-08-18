@@ -15,7 +15,7 @@ class LaserPos : public Laser
     public:
         int posX;
         int posY;
-        int direction;
+        float direction;
 
-        LaserPos(int posX, int posY, int direction, PinName pin);
+        LaserPos(int posX, int posY, float direction, PinName pin);
 };
