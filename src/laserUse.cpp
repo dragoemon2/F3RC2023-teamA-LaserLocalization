@@ -11,8 +11,17 @@ float radiansMod(float x, float y=2*PI){
 
 _LaserUse::_LaserUse(float minX, float maxX, float minY, float maxY, float errorD, int wallDirection, int wallR, int laserDirection): minX(minX), maxX(maxX), minY(minY), maxY(maxY), errorD(errorD), wallDirection(wallDirection), wallR(wallR), laserDirection(laserDirection) {
     //初期化
+    activate();
 }
 
+
+void _LaserUse::activate(){
+    active = true;
+}
+
+void _LaserUse::inactivate(){
+    active = false;
+}
 
 LaserUse::LaserUse(float minX, float maxX, float minY, float maxY, float errorD, int wallDirection, int wallR, LaserPos laser): _LaserUse(minX, maxX, minY, maxY, errorD, wallDirection, wallR, laser.direction), laser(laser) {
     //初期化
@@ -34,6 +43,9 @@ LaserPairUse::LaserPairUse(float minX, float maxX, float minY, float maxY, float
 }
 
 bool _LaserUse::check(float X, float Y, float D){
+    if(!active){
+        return false;
+    }
     float diffD = radiansMod(D - (wallDirection - laserDirection)*PI/2);
     return (minX <= X && X < maxX && minY <= Y && Y < maxY && -errorD < diffD && diffD < errorD);
 }
@@ -82,7 +94,6 @@ void LaserUse::scan(float* X, float* Y, float* D, bool denoise, bool always){
 
 void LaserPairUse::scan(float* X, float* Y, float* D, bool denoise, bool always){
     if(!always && !check(*X, *Y, *D)){
-        printf("hoge");
         return;
     }
 

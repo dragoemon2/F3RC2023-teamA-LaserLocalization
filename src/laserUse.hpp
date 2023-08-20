@@ -20,6 +20,11 @@ class _LaserUse{
         _LaserUse(float minX, float maxX, float minY, float maxY, float errorD, int wallDirection, int wallR, int laserDirection);
 
         bool check(float X, float Y, float D);
+        bool active;
+
+        void activate();
+        void inactivate();
+        virtual void scan(float* X, float* Y, float* D, bool denoise=false, bool always=false);
 };
 
 class LaserUse: public _LaserUse
