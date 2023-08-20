@@ -1,9 +1,11 @@
 #pragma once
 #include <mbed.h>
 #include <vector>
-#include "flash_api.h"
+//#include "flash_api.h"
+#include "_laser.hpp"
 
-class Laser
+//DT35のレーザー
+class Laser: public _Laser
 {
 public:
     PinName pin;

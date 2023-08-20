@@ -53,6 +53,10 @@ void LaserUse::scan(float* X, float* Y, float* D, bool denoise, bool always){
         length = float(laser.read());
     }
 
+    if(length < 0){
+        return;
+    }
+
     //ロボットの位置ベクトルと壁の単位法線ベクトルの内積
     float value = wallR - (laser.posX*cos(theta1) + laser.posY*sin(theta1) + length*cos(theta2));
 

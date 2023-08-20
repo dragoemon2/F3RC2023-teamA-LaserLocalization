@@ -23,43 +23,52 @@
 #define SOUTH (3)
 */
 
-//----レーザーとロボット上でのその位置の指定----
-#include "laserPos.hpp"
+//----レーザーの設定----
+#include "laser.hpp"
+#include "tofLaser.hpp"
 
 //DT35
+Laser laserCore1(PC_1);
+Laser laserCore2(PC_0);
+
+//VL53L0X
+TOFLaser laserCore3(
+    0, //番号(必ずレーザーによって異なるものを使用)
+    PA_13, //xshut
+    PB_3, //sda
+    PB_10 //scl
+);
+
+TOFLaser laserCore4(1, PA_13, PB_3, PB_10);
+
+//----ロボット上でのレーザーの位置の指定----
+#include "laserPos.hpp"
 LaserPos laser1(
     100, //DT35レーザー位置のx座標
     -150, //DT35レーザー位置のy座標
-    SOUTH, //ロボットが東を向いた時の向き
-    PC_1 //ピン
+    SOUTH,
+    laserCore1
 );
 
 LaserPos laser2(
     -100, //DT35レーザー位置のx座標
     -150, //DT35レーザー位置のy座標
-    SOUTH, //ロボットが東を向いた時の向き
-    PC_0 //ピン
+    SOUTH,
+    laserCore2
 );
 
-//VL53L0X
-TOFLaserPos laser3(
+LaserPos laser3(
     -150, //VL53L0Xレーザー位置のx座標
     -100, //VL53L0Xレーザー位置のy座標
     WEST, //ロボットが東を向いた時の向き
-    0, //番号unsigned int レーザーによって異なるものを指定．
-    PA_13, //xshutピン
-    PB_3, //SDAピン
-    PB_10 //SCLピン
+    laserCore3
 );
 
-TOFLaserPos laser4(
+LaserPos laser4(
     -150, //VL53L0Xレーザー位置のx座標
     100, //VL53L0Xレーザー位置のy座標
     WEST, //ロボットが東を向いた時の向き
-    1, //番号unsigned int レーザーによって異なるものを指定．
-    PA_14, //xshutピン
-    PB_3, //SDAピン
-    PB_10 //SCLピン
+    laserCore4
 );
 
 //----レーザー自己位置推定の使用パターンと使える条件の指定----
@@ -93,20 +102,20 @@ LaserUse lu2(
 //----使い方----
 int main(){
     //VL53L0Xにアドレス書き込み，初期化
-    laser3.init();
-    laser4.init();
+    laserCore3.init();
+    laserCore4.init();
 
     //レーザーの値を読む int[mm]　読めないと負の値となる．
     //割り込み内では使用できない
-    laser1.read();
-    laser2.read();
-    laser3.read();
-    laser4.read();
+    laser1.read(); //laserCore1.read()でもOK
+    laser2.read(); //laserCore2.read()でもOK
+    laser3.read(); //laserCore3.read()でもOK
+    laser4.read(); //laserCore4.read()でもOK
 
     //DT35の値をノイズ除去して読む int[mm]
     //割り込み内では使用できない
-    laser1.readDenoise();
-    laser2.readDenoise();
+    laser1.readDenoise(); //laserCore1.readDenoise()でもOK
+    laser2.readDenoise(); //laserCore2.readDenoise()でもOK
 
     //条件付き自己位置推定
     //もちろん割り込み内では使用できない
@@ -120,7 +129,6 @@ int main(){
         wait_us(10000);
     }
 }
-
 ```
 
 

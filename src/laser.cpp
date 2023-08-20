@@ -15,6 +15,7 @@ using namespace std;
 #else
     #define DEFAULT_A (13043.0f)
     #define DEFAULT_B (-2374.0f)
+#endif
 
 //ふつうに読む(8usほどかかる)
 int Laser::read()
