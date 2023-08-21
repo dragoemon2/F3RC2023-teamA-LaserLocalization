@@ -1,13 +1,9 @@
 #include "LaserUse.hpp"
 #include "LaserPos.hpp"
 #include "parameters.hpp"
+#include "simpleFunctions.hpp"
 #include <math.h>
 
-float radiansMod(float x, float y=2*PI){
-    //x (mod y) を -y/2 ~ y/2の範囲で出力
-    //主に2つの方角のなす角度を計算するのに使用
-    return fmod((fmod(x,y) + y/2),y) - y/2;
-}
 
 _LaserUse::_LaserUse(float minX, float maxX, float minY, float maxY, float errorD, int wallDirection, int wallR, int laserDirection): minX(minX), maxX(maxX), minY(minY), maxY(maxY), errorD(errorD), wallDirection(wallDirection), wallR(wallR), laserDirection(laserDirection) {
     //初期化
