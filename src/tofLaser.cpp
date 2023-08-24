@@ -7,7 +7,7 @@
 
 TOFLaser::TOFLaser(unsigned int id, PinName xshut_pin, PinName sda_pin, PinName scl_pin): xshut(xshut_pin), i2c(sda_pin, scl_pin), sensor(i2c, timer)
 {
-    xshut.write(1);
+    xshut.write(0);
     address = DEFAULT_ADDRESS + 2 + 2*id;
     //init();
     last_value = -1;
@@ -41,7 +41,13 @@ int TOFLaser::read(){
         value = sensor.readRangeContinuousMillimeters(false);
         last_value = value;
 
-        if(value > 8000 || value < 10){
+        #if 1
+
+        if(value > 8000){
+            value = -1;
+        }
+        #endif
+        if(value < 10){
             value = -1;
         }
     }else{
