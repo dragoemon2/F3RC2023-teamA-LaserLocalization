@@ -5,9 +5,9 @@
 #include <math.h>
 
 
-_LaserUse::_LaserUse(float minX, float maxX, float minY, float maxY, float errorD, int wallDirection, int wallR, int laserDirection): minX(minX), maxX(maxX), minY(minY), maxY(maxY), errorD(errorD), wallDirection(wallDirection), wallR(wallR), laserDirection(laserDirection) {
+_LaserUse::_LaserUse(int wallDirection, int wallR, int laserDirection): wallDirection(wallDirection), wallR(wallR), laserDirection(laserDirection) {
     //初期化
-    activate();
+    inactivate();
 }
 
 
@@ -19,11 +19,16 @@ void _LaserUse::inactivate(){
     active = false;
 }
 
-LaserUse::LaserUse(float minX, float maxX, float minY, float maxY, float errorD, int wallDirection, int wallR, LaserPos laser): _LaserUse(minX, maxX, minY, maxY, errorD, wallDirection, wallR, laser.direction), laser(laser) {
+bool _LaserUse::check(float X, float Y, float D){
+    //レーザーの使用条件などあればここに書く．
+    return true;
+}
+
+LaserUse::LaserUse(int wallDirection, int wallR, LaserPos laser): _LaserUse(wallDirection, wallR, laser.direction), laser(laser) {
     //初期化
 }
 
-LaserPairUse::LaserPairUse(float minX, float maxX, float minY, float maxY, float errorD, int wallDirection, int wallR, LaserPos laser1, LaserPos laser2): _LaserUse(minX, maxX, minY, maxY, errorD, wallDirection, wallR, laser1.direction), laser1(laser1), laser2(laser2) {
+LaserPairUse::LaserPairUse(int wallDirection, int wallR, LaserPos laser1, LaserPos laser2): _LaserUse(wallDirection, wallR, laser1.direction), laser1(laser1), laser2(laser2) {
     if(laser1.direction != laser2.direction){
         printf("Exception: failed raisers");
     }
@@ -36,14 +41,6 @@ LaserPairUse::LaserPairUse(float minX, float maxX, float minY, float maxY, float
             printf("Exception: failed raisers");
         }
     }
-}
-
-bool _LaserUse::check(float X, float Y, float D){
-    if(!active){
-        return false;
-    }
-    float diffD = radiansMod(D - (wallDirection - laserDirection)*PI/2);
-    return (minX <= X && X < maxX && minY <= Y && Y < maxY && -errorD < diffD && diffD < errorD);
 }
 
 void LaserUse::scan(float* X, float* Y, float* D, bool denoise, bool always){

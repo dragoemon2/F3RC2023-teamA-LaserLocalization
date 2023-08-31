@@ -20,7 +20,7 @@ void TOFLaser::init(){
     //i2c.timeout(100);
 
     sensor.setTimeout(100);
-    sensor.setMeasurementTimingBudget(33000);
+    sensor.setMeasurementTimingBudget(50000);
     sensor.setAddress(address);
     result = sensor.init();
     printf("%d\n",result);

@@ -12,16 +12,13 @@
 
 #include "tofLaser.hpp"
 TOFLaser laser1(0, D8, PB_3, PB_10);
-TOFLaser laser2(1, D9, PB_3, PB_10);
-TOFLaser laser3(2, D10, PB_3, PB_10);
+
 
 int main(){
     laser1.init();
-    laser2.init();
-    laser3.init();
 
     while(1){
-        printf("%d %d %d\n", laser1.read(), laser2.read(), laser3.read());
+        printf("%d\n", laser1.read());
         //printf("%d %d\n", laser1.read(), laser3.read());
         wait_us(100000);
     }
