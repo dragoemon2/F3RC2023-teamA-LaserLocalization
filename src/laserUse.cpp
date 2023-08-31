@@ -24,6 +24,13 @@ bool _LaserUse::check(float X, float Y, float D){
     return true;
 }
 
+_LaserUse::~_LaserUse(){
+    delete wallDirection;
+    delete wallR;
+    delete laserDirection;
+    delete active;
+}
+
 LaserUse::LaserUse(int wallDirection, int wallR, LaserPos laser): _LaserUse(wallDirection, wallR, laser.direction), laser(laser) {
     //初期化
 }
