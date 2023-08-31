@@ -1,5 +1,5 @@
-#include "LaserUse.hpp"
-#include "LaserPos.hpp"
+#include "laserUse.hpp"
+#include "laserPos.hpp"
 #include "parameters.hpp"
 #include "simpleFunctions.hpp"
 #include <math.h>
@@ -11,7 +11,9 @@ _LaserUse::_LaserUse(int wallDirection, int wallR, int laserDirection): wallDire
 }
 
 
-void _LaserUse::activate(){
+void _LaserUse::activate(int wallDirection, int wallR){
+    wallDirection = wallDirection;
+    wallR = wallR;
     active = true;
 }
 
@@ -24,12 +26,6 @@ bool _LaserUse::check(float X, float Y, float D){
     return true;
 }
 
-_LaserUse::~_LaserUse(){
-    delete wallDirection;
-    delete wallR;
-    delete laserDirection;
-    delete active;
-}
 
 LaserUse::LaserUse(int wallDirection, int wallR, LaserPos laser): _LaserUse(wallDirection, wallR, laser.direction), laser(laser) {
     //初期化

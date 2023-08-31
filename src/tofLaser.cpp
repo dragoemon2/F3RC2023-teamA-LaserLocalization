@@ -10,31 +10,43 @@ TOFLaser::TOFLaser(unsigned int id, PinName xshut_pin, PinName sda_pin, PinName 
     xshut.write(0);
     address = DEFAULT_ADDRESS + 2 + 2*id;
     //init();
-    last_value = -1;
+    last_value = -1; //デバッグ用
 }
 
+//初期化，アドレスの書き込み
 void TOFLaser::init(){
     bool result;
 
     xshut.write(1);
-    //i2c.timeout(100);
 
+    //タイムアウト(ミリ秒)
     sensor.setTimeout(100);
+
+    //測定時間の上限
     sensor.setMeasurementTimingBudget(50000);
+
+    //アドレスの書き込み
     sensor.setAddress(address);
+
+    //センサー初期化
     result = sensor.init();
+
+    //デバッグ用
     printf("%d\n",result);
+
+    //測定開始
     sensor.startContinuous(0);
 }
 
 void TOFLaser::restart(){
     //i2c.write(DEFAULT_ADDRESS, (const char *)buffer, 2, 0);
+    //再接続
     sensor.stopContinuous();
     sensor.setAddress(DEFAULT_ADDRESS);
     init();
 }
 
-//値の読み取り(ノイズ除去なし)
+//値の読み取り
 int TOFLaser::read(){
     int value = last_value;
     if(sensor.readReg(VL53L0X::RESULT_INTERRUPT_STATUS) & 0x07){
@@ -42,7 +54,6 @@ int TOFLaser::read(){
         last_value = value;
 
         #if 1
-
         if(value > 8000){
             value = -1;
         }
@@ -51,7 +62,6 @@ int TOFLaser::read(){
             value = -1;
         }
     }else{
-        //新しく読めてなかったときの処理
         value = -2;
     }
 
@@ -61,6 +71,8 @@ int TOFLaser::read(){
     }
 
     if(value == 0x0b01){
+        //通信遮断時
+        //再接続を試みる
         restart();
         return -4;
     }

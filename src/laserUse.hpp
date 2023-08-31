@@ -10,12 +10,11 @@ class _LaserUse{
 
         bool active;
 
-        void activate();
+        void activate(int wallDirection, int wallR);
         void inactivate();
         bool check(float X, float Y, float D);
-        virtual void scan(float* X, float* Y, float* D, bool denoise=false);
+        //virtual void scan(float* X, float* Y, float* D, bool denoise=false);
         _LaserUse(int wallDirection, int wallR, int laserDirection);
-        ~_LaserUse();
 };
 
 class LaserUse: public _LaserUse
