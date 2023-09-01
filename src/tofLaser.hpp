@@ -7,7 +7,7 @@
 class TOFLaser: public _Laser
 {
     public:
-        DigitalOut xshut;
+        DigitalInOut xshut;
         VL53L0X sensor;
         I2C i2c;
         Timer timer;

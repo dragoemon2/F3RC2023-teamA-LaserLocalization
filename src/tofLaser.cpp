@@ -7,6 +7,7 @@
 
 TOFLaser::TOFLaser(unsigned int id, PinName xshut_pin, PinName sda_pin, PinName scl_pin): xshut(xshut_pin), i2c(sda_pin, scl_pin), sensor(i2c, timer)
 {
+    xshut.output();
     xshut.write(0);
     address = DEFAULT_ADDRESS + 2 + 2*id;
     //init();
@@ -17,7 +18,8 @@ TOFLaser::TOFLaser(unsigned int id, PinName xshut_pin, PinName sda_pin, PinName 
 void TOFLaser::init(){
     bool result;
 
-    xshut.write(1);
+    xshut.input();
+    //xshut.write(1);
 
     //タイムアウト(ミリ秒)
     sensor.setTimeout(100);
